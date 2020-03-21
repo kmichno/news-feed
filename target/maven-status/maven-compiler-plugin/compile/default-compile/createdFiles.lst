@@ -1,6 +1,0 @@
-com\linkshortener\api\GetLinksResponse.class
-com\linkshortener\api\Statistic.class
-com\linkshortener\controllers\LinkController.class
-com\linkshortener\api\ShortenLinkRequest.class
-com\linkshortener\api\LinkObject.class
-com\linkshortener\LinkShortenerApplication.class
