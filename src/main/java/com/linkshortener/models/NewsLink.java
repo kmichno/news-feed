@@ -17,13 +17,9 @@ public class NewsLink implements Serializable {
 
     private String title;
 
-    private String content;
-
     private String shortUrl;
 
     private String longUrl;
-
-    private int numberUniqueEntries = 0;
 
     private int numberAllEntries = 0;
 
@@ -38,7 +34,6 @@ public class NewsLink implements Serializable {
         this.title = title;
         this.shortUrl = link.getShortUrl();
         this.longUrl = link.getLongUrl();
-        this.numberUniqueEntries = link.getNumberUniqueEntries();
         this.numberAllEntries = link.getNumberAllEntries();
     }
 

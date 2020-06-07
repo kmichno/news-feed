@@ -15,11 +15,8 @@ public class NewsLinkTitle implements Serializable {
 
     private String title;
 
-    private String content;
-
-    public NewsLinkTitle(String id, String title, String content) {
+    public NewsLinkTitle(String id, String title) {
         this.id = id;
         this.title = title;
-        this.content = content;
     }
 }

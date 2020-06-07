@@ -23,6 +23,10 @@ public class LinkController {
 
     private RestTemplate restTemplate = new RestTemplate();
 
+    private final String LINK_SHORTENER_SERVER = "http://localhost:8080/";
+
+    private final String SHORTEN_LINK_SERVICE = "link/short";
+
     @Autowired
     private NewsLinkTitleRepository newsLinkTitleRepository;
 
@@ -38,35 +42,43 @@ public class LinkController {
         List<NewsLink> newsLinks = newsLinkTitleList.stream().filter(x-> linksMap.containsKey(x.getId())).map(x-> new NewsLink(x.getId(), x.getTitle(), linksMap.get(x.getId()))).collect(Collectors.toList());
         return new GetLinksDetailsResponse(newsLinks);
     }
-//
-//    @GetMapping("/link/{id}")
-//    public LinkObject getLinkById(@PathVariable String id) throws Exception{
-//        return linkRepository.findById(id).orElseThrow(Exception::new);
-//    }
-//
-    @DeleteMapping("/link/delete/{id}")
-    public void deleteLinkById(@PathVariable String id) {
+
+    @GetMapping("/link/{id}")
+    public NewsLinkTitle getLinkById(@PathVariable("id") String id) throws Exception{
+        return newsLinkTitleRepository.findById(id).orElseThrow(Exception::new);
+    }
+
+    @PostMapping("/link/edit/{id}")
+    public void editLinkById(@PathVariable("id") String id, @RequestBody EditLinkRequest editLinkRequest) throws Exception{
+        NewsLinkTitle newsLinkTitle = new NewsLinkTitle(id, editLinkRequest.getTitle());
+        newsLinkTitleRepository.save(newsLinkTitle);
+    }
+
+    @PostMapping("/link/delete/{id}")
+    public void deleteLinkById(@PathVariable("id") String id) {
         newsLinkTitleRepository.deleteById(id);
         String fooResourceUrl
                 = "http://localhost:8080/link/delete/"+id;
         restTemplate.delete(fooResourceUrl);
     }
 
-    @RequestMapping(path = "link/short", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json; charset=utf-8")
-    public ShortenLinkResponse shortenLink(@RequestBody
-            ShortenLinkExtendedRequest shortenLinkExtendedRequest) {
-        String fooResourceUrl
-                = "http://localhost:8080/link/short";
+    @PostMapping("link/short")
+    public ShortenLinkResponse shortenLink(@RequestBody ShortenLinkExtendedRequest shortenLinkExtendedRequest) {
         val shortenLinkRequest = new ShortenLinkRequest(shortenLinkExtendedRequest.getLongUrl());
         HttpEntity<ShortenLinkRequest> request = new HttpEntity<>(shortenLinkRequest);
-        LinkObject link = restTemplate.postForObject(fooResourceUrl, request, LinkObject.class);
-        NewsLinkTitle newsLinkTitle = new NewsLinkTitle(link.getId(), shortenLinkExtendedRequest.getTitle(), "");
+        LinkObject link = restTemplate.postForObject(LINK_SHORTENER_SERVER + SHORTEN_LINK_SERVICE, request, LinkObject.class);
+
+        NewsLinkTitle newsLinkTitle = new NewsLinkTitle(link.getId(), shortenLinkExtendedRequest.getTitle());
         newsLinkTitleRepository.save(newsLinkTitle);
+        return prepareShortenLinkResponse(link, newsLinkTitle);
+    }
+
+    private ShortenLinkResponse prepareShortenLinkResponse(LinkObject link, NewsLinkTitle newsLinkTitle) {
         NewsLink newsLink = new NewsLink(newsLinkTitle.getId(), newsLinkTitle.getTitle(), link);
         return new ShortenLinkResponse(newsLink);
     }
 
-//    @GetMapping("/statistic/{linkId}")
+    //    @GetMapping("/statistic/{linkId}")
 //    public List<Statistic> getAllStatisticsByLinkId(@PathVariable String linkId) {
 //        return statisticRepository.findAllByLinkId(linkId);
 //    }
