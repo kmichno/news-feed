@@ -1,2 +1,2 @@
-# link-shortener
-Aplikacja do skracania linków
+# news-feed
+Aplikacja do skracania adresów URL do artykułów informacyjnych

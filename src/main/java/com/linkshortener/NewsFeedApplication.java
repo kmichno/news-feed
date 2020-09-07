@@ -23,11 +23,6 @@ public class NewsFeedApplication {
                 registry.addMapping("/**").allowedOrigins("http://localhost:3001");;
                 registry.addMapping("/link/**");
                 registry.addMapping("/link/edit/**");
-//                registry.addMapping("/links").allowedOrigins("http://192.168.100.9:3000");
-//                registry.addMapping("/link/short").allowedOrigins("http://192.168.100.9:3000");
-//                registry.addMapping("/link/delete/**").allowedOrigins("http://192.168.100.9:3000");
-//                registry.addMapping("/link/**").allowedOrigins("http://192.168.100.9:3000");
-//                registry.addMapping("/link/edit/**").allowedOrigins("http://192.168.100.9:3000");
             }
         };
     }
